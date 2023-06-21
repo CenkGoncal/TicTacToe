@@ -1,19 +1,26 @@
 import React, {useState} from 'react';
 import {
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Dimensions,
-  TouchableOpacity,
-  
+  TouchableOpacity,  
 } from 'react-native';
 
  
-
+const Box = ({val, handleClick, highligted , disabled}) => {
+  return (
+    <TouchableOpacity
+      disabled={disabled}
+      onPress={handleClick}
+      style={[
+        styles.Box,
+        {backgroundColor: highligted ? "green" : ( val === 'X' ? 'lightgray' : 'lightgreen')},
+      ]}>
+      <Text style={styles.BoxText}>{val}</Text>
+    </TouchableOpacity>
+  );
+};
 
 const App = () => {
   const [active_player, setActivePlayer] = useState('X');
@@ -21,24 +28,10 @@ const App = () => {
   const [winner, setWinner] = useState(null);
   const [highligted, setHighligted] = useState(null);
  
-  const Box = ({index,val, handleClick, highligted , disabled}) => {
-    return (
-      <TouchableOpacity
-        disabled={disabled}
-        onPress={handleClick}
-        style={[
-          styles.Box,
-          ,
-          {backgroundColor: highligted ? "green" : ( val == 'X' ? 'lightgray' : 'lightgreen')},
-        ]}>
-        <Text style={styles.BoxText}>{val}</Text>
-      </TouchableOpacity>
-    );
-  };
 
   const createBoxes = () => {
     const boxes = [];
-     for(var i = 0; i<3; i++)
+     for(let i = 0; i<3; i++)
     {
        boxes.push(<View key={i} style={styles.BoxView}>{createBoxItem((i*3) +1)}</View>);
      }
@@ -57,7 +50,7 @@ const App = () => {
     {
       setWinner(active_player);
       setHighligted(writeline);
-      alert("You're Won")
+      console.warn("You're Won");
     }
     else
       setActivePlayer((prev)=>prev === "X" ? "O" : "X");
@@ -94,10 +87,7 @@ const App = () => {
   ];
 
    return lines.find(([a,b,c]) => {
-      if(newBord[a] != null && newBord[a] === newBord[b] && newBord[a] === newBord[c])
-        return true;
-    
-    return false;
+    return newBord[a] != null && newBord[a] === newBord[b] && newBord[a] === newBord[c] ? true :  false;       
   });
  }
 
@@ -106,7 +96,7 @@ const App = () => {
       <View
         style={[
           styles.PlayerInfo,
-          {backgroundColor: active_player == 'X' ? '#007FF4' : '#F40075'},
+          {backgroundColor: active_player === 'X' ? '#007FF4' : '#F40075'},
         ]}>
         <Text style={styles.PlayerFont}>Player {active_player} {winner ? "Win" : "Turn"}</Text>
       </View>
@@ -114,7 +104,7 @@ const App = () => {
       <TouchableOpacity style={styles.ResetCtn} onPress={ClearGame}>
         <Text style={styles.ResetText}>Reset</Text>
       </TouchableOpacity>
-      {(!winner && board.filter(f=> f == null).length != 0) && <Text>No One Win Please Start New Game!</Text>}
+      {(!winner && board.filter(f=> f == null).length !== 0) && <Text>No One Win Please Start New Game!</Text>}
     </SafeAreaView>
   );
 };
